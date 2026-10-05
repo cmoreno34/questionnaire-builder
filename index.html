@@ -166,6 +166,7 @@ input[type=range]{accent-color:var(--leaf);width:220px}
     <div><b>How it is marked</b><ul><li>Every question maps to an information need and an analysis.</li><li>Order and length are defended.</li><li>The quality of your judgement on the AI draft — accepting it unchanged scores low.</li></ul></div>
   </div>
   <p class="next"><b>Before →</b> the <a href="https://cmoreno34.github.io/scale-studio/">scale studio</a> sends your project and concepts here. <b>Next →</b> <b>Check it in the question checker</b> (step 7) sends the checker your questionnaire, your topic and your analysis plan — nothing to retype.</p>
+  <p class="next"><b>Working over several days?</b> Everything saves itself in this browser. On a shared computer, or to switch computer, use <b>💾 Save my work</b> at the bottom of the page and, next time, <b>📂 Open saved work</b>.</p>
 </section>
 
 <div class="who">
@@ -288,9 +289,13 @@ input[type=range]{accent-color:var(--leaf);width:220px}
 
 <div class="bar">
   <button class="pdf" id="pdf">⬇ Download PDF</button>
+  <button class="ghost" id="savework" title="Download a file with everything you have done, to continue on another day or another computer">💾 Save my work</button>
+  <button class="ghost" id="openwork" title="Open a file saved with Save my work">📂 Open saved work</button>
+  <input type="file" id="workfile" accept=".json,application/json" style="display:none">
   <button class="ghost" id="clear">Clear worksheet</button>
   <span class="saved" id="saved">Saved in this browser</span>
 </div>
+<p class="hint noprint" style="margin-top:2px"><b>To continue another day:</b> your work saves itself in <b>this browser</b> on <b>this computer</b>. On a shared or university computer, or to switch computer, press <b>💾 Save my work</b> — it downloads a small file. Next time, open this page and press <b>📂 Open saved work</b> to pick up exactly where you left off. The <b>PDF</b> is what you hand in; the saved file is only for you.</p>
 <footer>Estudios de Mercado I · Tema 5 · The builder writes a prompt — nothing you type leaves your browser unless you paste it into an AI chat yourself.</footer>
 </div>
 
@@ -480,7 +485,8 @@ function autogrow(t){if(t.classList.contains('capped'))return;t.style.height='au
     if(!has||confirm('Load the project sent from the scale studio (“'+imp.topic+'”)? It replaces the topic, client, decision and the list in step 3.')){
       $('#w_topic').value=imp.topic||'';$('#w_client').value=imp.client||'';$('#w_decision').value=imp.decision||'';
       state.needs=(imp.needs||[]).map(x=>({t:x.t,a:ANAL.includes(x.a)?x.a:'let the AI choose'}));if(!state.needs.length)state.needs=[{t:'',a:'let the AI choose'}];
-      $('#frommsg').textContent=`✓ Received from the scale studio: your project and ${(imp.needs||[]).length} concept(s) — see step 3. Add the rest of what the survey must find out.`;}
+      if(imp.qual){$('#w_qual').value=imp.qual;state.mode='qual';}
+      $('#frommsg').textContent=`✓ Received from the scale studio: your project${imp.qual?', your qualitative results':''} and ${(imp.needs||[]).length} concept(s) — see step 3. Add the rest of what the survey must find out.`;}
     try{localStorage.removeItem('em1_t5_from_scales');}catch(_){}}
   renderMode();renderNeeds();renderSecs();renderTypes();renderChecks();qualCount();refresh();})();
 $('#addneed').onclick=()=>{state.needs.push({t:'',a:'let the AI choose'});renderNeeds();refresh();const ins=document.querySelectorAll('#needs input');ins[ins.length-1].focus();};
@@ -491,5 +497,28 @@ $('#copyprompt').onclick=e=>copy(buildPrompt(),e.currentTarget);
 $('#pdf').onclick=()=>{if(!val('w_date'))$('#w_date').value=new Date().toLocaleDateString();window.print();};
 $('#clear').onclick=()=>{if(confirm('Clear the worksheet? Download your PDF first if you need it.')){try{localStorage.removeItem(KEY);}catch(_){}location.reload();}};
 const root=document.documentElement;$('#theme').onclick=()=>{const c=root.getAttribute('data-theme');root.setAttribute('data-theme',c==='dark'?'light':c==='light'?'dark':(matchMedia('(prefers-color-scheme:dark)').matches?'light':'dark'));};
+
+/* ---------- save my work to a file / open it again ---------- */
+(function(){
+  const APP=document.title;
+  function stamp(){const d=new Date(),z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}_${z(d.getHours())}${z(d.getMinutes())}`;}
+  document.getElementById('savework').onclick=e=>{const btn=e.currentTarget;try{save();}catch(_){}
+    setTimeout(()=>{let data=null;try{data=localStorage.getItem(KEY);}catch(_){}
+      if(!data){alert('Nothing to save yet.');return;}
+      const who=(document.getElementById('w_name')||{}).value||'';
+      const blob=new Blob([JSON.stringify({app:APP,key:KEY,saved:new Date().toISOString(),data},null,1)],{type:'application/json'});
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+      a.download=`${APP.toLowerCase().replace(/\s+/g,'-')}_${(who||'my-work').replace(/[^\wÀ-ſ-]+/g,'-').slice(0,40)}_${stamp()}.json`;
+      document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+      const o=btn.textContent;btn.textContent='💾 Saved ✓ — check your Downloads';setTimeout(()=>btn.textContent=o,2500);},450);};
+  document.getElementById('openwork').onclick=()=>document.getElementById('workfile').click();
+  document.getElementById('workfile').onchange=async e=>{const f=e.target.files[0];if(!f)return;
+    try{const o=JSON.parse(await f.text());
+      if(!o||o.key!==KEY||typeof o.data!=='string'){alert('This file was saved from a different tool'+(o&&o.app?` (“${o.app}”)`:'')+'. Open it in that tool.');return;}
+      if(!confirm(`Open the work saved on ${new Date(o.saved).toLocaleString()}? It replaces what is on this page now.`))return;
+      localStorage.setItem(KEY,o.data);location.reload();}
+    catch(_){alert('Could not read that file. Choose a file made with “Save my work”.');}
+    finally{e.target.value='';}};
+})();
 </script>
 </body></html>
