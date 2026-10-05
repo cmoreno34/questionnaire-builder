@@ -102,6 +102,27 @@ footer{margin:28px 0 30px;font-size:12px;color:var(--soft);border-top:1px solid 
   .printonly{display:block;margin-bottom:10px;border-bottom:2px solid #2f6b4f;padding-bottom:6px}
 }
 
+.process{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0 4px;counter-reset:p}
+@media (max-width:640px){.process{grid-template-columns:1fr 1fr}}
+.process a,.process div{display:block;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--panel);text-decoration:none;color:var(--ink);font-size:12px;line-height:1.35}
+.process b{display:block;font:700 13px Archivo;margin-bottom:2px}
+.process .k{font:700 10px Archivo;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.process [aria-current]{background:var(--leaf);border-color:transparent;color:#fff}
+.process [aria-current] .k{color:rgba(255,255,255,.8)}
+.process .off{background:var(--ground);border-style:dashed}
+.brief{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow)}
+.brief h3{margin:0 0 6px;color:var(--leaf-ink)}
+.brief .goal{font-size:15px;margin:0 0 12px}
+.brief ol{margin:0 0 12px;padding-left:22px;font-size:13.5px}
+.brief li{margin:5px 0}
+.brief .min{display:inline-block;font:700 10.5px Archivo;color:var(--soft);border:1px solid var(--line);border-radius:999px;padding:0 7px;margin-left:4px;white-space:nowrap}
+.brief .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.brief .two{grid-template-columns:1fr}}
+.brief .two div{background:var(--ground);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px}
+.brief .two ul{margin:4px 0 0;padding-left:18px}
+.brief .next{font-size:13px;margin:12px 0 0;color:var(--soft)}
+.grp{font:700 10.5px Archivo;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin:10px 0 2px;width:100%}
+
 .need{display:grid;grid-template-columns:1fr minmax(170px,240px) auto;gap:6px;align-items:center;margin:5px 0}
 @media (max-width:560px){.need{grid-template-columns:1fr auto}.need select{grid-column:1/2}}
 .need select{width:100%}
@@ -123,10 +144,29 @@ input[type=range]{accent-color:var(--leaf);width:220px}
   <h1>Questionnaire builder</h1></div>
   <button class="themebtn" id="theme">◐ Theme</button>
 </header>
-<nav class="suite" aria-label="Tema 5 tools"><span style="align-self:center;font-weight:700">Tema 5 tools:</span><a href="https://cmoreno34.github.io/scale-studio/">Scale studio</a><a href="https://cmoreno34.github.io/question-checker/">Question checker</a><a href="https://cmoreno34.github.io/questionnaire-builder/" aria-current="page">Questionnaire builder</a></nav>
+<nav class="process" aria-label="Tema 5 — the questionnaire process"><a href="https://cmoreno34.github.io/scale-studio/"><span class="k">Practical 1</span><b>Scale studio</b>Decide how to measure each concept</a><a href="https://cmoreno34.github.io/questionnaire-builder/" aria-current="page"><span class="k">Practical 2</span><b>Questionnaire builder</b>Draft the questionnaire with AI — your decisions</a><a href="https://cmoreno34.github.io/question-checker/"><span class="k">Practical 3</span><b>Question checker</b>Find and fix the faults, pretest it</a><div class="off"><span class="k">Then</span><b>Pilot &amp; launch</b>3–5 real people, time it on a phone, field it</div></nav>
 <div class="printonly"><div style="font:700 11px Archivo;letter-spacing:.1em;text-transform:uppercase;color:#2f6b4f">Estudios de Mercado I · Tema 5 — Questionnaire builder worksheet</div></div>
 
 <p class="sub"><b>You design it, the AI drafts it.</b> Start from a topic or from your qualitative results, decide what you need to learn and the analysis for each line, set the order, the length, the scales and every check — and the builder writes the prompt that makes Claude, ChatGPT or Gemini draft the questionnaire. Then you check it in the <a href="https://cmoreno34.github.io/question-checker/">question checker</a> and pilot it.</p>
+
+<section class="brief noprint">
+  <h3>What this practical is for</h3>
+  <p class="goal">To go through the design process of 5.2 — <b>objectives → information needed → analysis → questions → order → pretest</b> — on your own project. The AI writes the first draft; <b>you make every design decision and judge the result</b>. What is marked is your decisions, not the AI's text.</p>
+  <h3>What you will do</h3>
+  <ol>
+    <li><b>Step 1</b> — start from your project topic, or <b>upload your qualitative results</b> (Tema 3): the survey will measure how widespread each theme is. Write the decision the survey is for.<span class="min">10 min</span></li>
+    <li><b>Step 2</b> — say who answers, how, and fix the <b>number of questions</b>.<span class="min">5 min</span></li>
+    <li><b>Step 3</b> — list what you need to learn and the analysis for each line — reuse your scale studio sheet.<span class="min">10 min</span></li>
+    <li><b>Steps 4–6</b> — decide the order of the sections, the formats and scales allowed, and tick the checks the questionnaire must pass.<span class="min">10 min</span></li>
+    <li><b>Step 7</b> — copy the prompt into Claude, ChatGPT or Gemini and paste the answer back.<span class="min">5 min</span></li>
+    <li><b>Step 8</b> — read the draft critically: what you change, cut or add, and why. Declare the AI use. Download the PDF, then press <b>Check it in the question checker</b>.<span class="min">15 min</span></li>
+  </ol>
+  <div class="two">
+    <div><b>What you hand in</b><ul><li>The PDF: your brief, information needs + analysis, order and checks.</li><li>The AI draft.</li><li>Your changes with reasons, and the AI declaration.</li></ul></div>
+    <div><b>How it is marked</b><ul><li>Every question maps to an information need and an analysis.</li><li>Order and length are defended.</li><li>The quality of your judgement on the AI draft — accepting it unchanged scores low.</li></ul></div>
+  </div>
+  <p class="next"><b>Before →</b> <a href="https://cmoreno34.github.io/scale-studio/">scale studio</a> (how to measure each concept). <b>Next →</b> the <a href="https://cmoreno34.github.io/question-checker/">question checker</a> receives your questionnaire automatically.</p>
+</section>
 
 <div class="who">
   <label>Name / group <input id="w_name" placeholder="Group 3 — A. García"></label>
