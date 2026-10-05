@@ -473,6 +473,10 @@ const ids=['w_name','w_date','w_topic','w_client','w_decision','w_objectives','w
 let st;function save(){clearTimeout(st);st=setTimeout(()=>{const o={state};ids.forEach(i=>{const e=document.getElementById(i);o[i]=e.type==='checkbox'?e.checked:e.value;});
   try{localStorage.setItem(KEY,JSON.stringify(o));$('#saved').textContent='Saved ✓ '+new Date().toLocaleTimeString();}catch(_){}} ,300);}
 function autogrow(t){if(t.classList.contains('capped'))return;t.style.height='auto';t.style.height=(t.scrollHeight+2)+'px';}
+function offer(text,onLoad,onDone){const d=document.createElement('div');d.className='fb mid noprint';d.style.margin='14px 0';
+  d.innerHTML=`<b>${text}</b><div class="row" style="margin-top:8px"><button class="btn sm" type="button">Load it</button><button class="btn sm alt" type="button">Ignore</button></div>`;
+  const [y,n]=d.querySelectorAll('button');y.onclick=()=>{onLoad();onDone();d.remove();};n.onclick=()=>{onDone();d.remove();};
+  document.querySelector('.who').before(d);d.scrollIntoView({block:'center'});}
 (function init(){let s={};try{s=JSON.parse(localStorage.getItem(KEY)||'{}');}catch(_){}
   if(s.state){state=Object.assign(state,s.state);state.checks=Object.assign({},DEF_CHECKS,state.checks||{});
     const known=SECTIONS.map(x=>x.k);if(!Array.isArray(state.secs)||state.secs.length!==known.length||!known.every(k=>state.secs.some(x=>x.k===k)))state.secs=SECTIONS.map(x=>({k:x.k,on:true}));}
@@ -481,13 +485,16 @@ function autogrow(t){if(t.classList.contains('capped'))return;t.style.height='au
     e.addEventListener(ev,()=>{if(e.tagName==='TEXTAREA')autogrow(e);if(i==='w_qual')qualCount();refresh();});
     if(e.tagName==='TEXTAREA')autogrow(e);});
   let imp=null;try{imp=JSON.parse(localStorage.getItem('em1_t5_from_scales')||'null');}catch(_){}
-  if(imp&&imp.topic){const has=val('w_topic')||state.needs.some(x=>x.t.trim());
-    if(!has||confirm('Load the project sent from the scale studio (“'+imp.topic+'”)? It replaces the topic, client, decision and the list in step 3.')){
+  if(imp&&imp.topic){const load=()=>{
       $('#w_topic').value=imp.topic||'';$('#w_client').value=imp.client||'';$('#w_decision').value=imp.decision||'';
       state.needs=(imp.needs||[]).map(x=>({t:x.t,a:ANAL.includes(x.a)?x.a:'let the AI choose'}));if(!state.needs.length)state.needs=[{t:'',a:'let the AI choose'}];
       if(imp.qual){$('#w_qual').value=imp.qual;state.mode='qual';}
-      $('#frommsg').textContent=`✓ Received from the scale studio: your project${imp.qual?', your qualitative results':''} and ${(imp.needs||[]).length} concept(s) — see step 3. Add the rest of what the survey must find out.`;}
-    try{localStorage.removeItem('em1_t5_from_scales');}catch(_){}}
+      renderMode();renderNeeds();qualCount();refresh();
+      $('#frommsg').textContent=`✓ Received from the scale studio: your project${imp.qual?', your qualitative results':''} and ${(imp.needs||[]).length} concept(s) — see step 3. Add the rest of what the survey must find out.`;};
+    const done=()=>{try{localStorage.removeItem('em1_t5_from_scales');}catch(_){}};
+    const has=val('w_topic')||state.needs.some(x=>x.t.trim());
+    if(!has){load();done();}
+    else setTimeout(()=>offer(`Your project “${imp.topic}” arrived from the scale studio. Load it? It replaces the topic, client, decision${imp.qual?', the qualitative results':''} and the list in step 3.`,load,done),0);}
   renderMode();renderNeeds();renderSecs();renderTypes();renderChecks();qualCount();refresh();})();
 $('#addneed').onclick=()=>{state.needs.push({t:'',a:'let the AI choose'});renderNeeds();refresh();const ins=document.querySelectorAll('#needs input');ins[ins.length-1].focus();};
 function copy(text,btn){const o=btn.textContent;const ok=()=>{btn.textContent='copied ✓';setTimeout(()=>btn.textContent=o,1200);};
