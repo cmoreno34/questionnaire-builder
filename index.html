@@ -154,9 +154,9 @@ input[type=range]{accent-color:var(--leaf);width:220px}
   <p class="goal">To go through the design process of 5.2 — <b>objectives → information needed → analysis → questions → order → pretest</b> — on your own project. The AI writes the first draft; <b>you make every design decision and judge the result</b>. What is marked is your decisions, not the AI's text.</p>
   <h3>What you will do</h3>
   <ol>
-    <li><b>Step 1</b> — start from your project topic, or <b>upload your qualitative results</b> (Tema 3): the survey will measure how widespread each theme is. Write the decision the survey is for.<span class="min">10 min</span></li>
+    <li><b>Step 1</b> — <b>came from the scale studio?</b> Your project is already here (steps 1 and 3 filled in) — check it. If not, write your project topic, client and decision. Either way you can also <b>upload your qualitative results</b> (Tema 3): the survey will measure how widespread each theme is.<span class="min">10 min</span></li>
     <li><b>Step 2</b> — say who answers, how, and fix the <b>number of questions</b>.<span class="min">5 min</span></li>
-    <li><b>Step 3</b> — list what you need to learn and the analysis for each line — reuse your scale studio sheet.<span class="min">10 min</span></li>
+    <li><b>Step 3</b> — what you need to learn and the analysis for each line. Your scale-studio concepts arrive here with their scale; add the other things the survey must find out.<span class="min">10 min</span></li>
     <li><b>Steps 4–6</b> — decide the order of the sections, the formats and scales allowed, and tick the checks the questionnaire must pass.<span class="min">10 min</span></li>
     <li><b>Step 7</b> — copy the prompt into Claude, ChatGPT or Gemini and paste the answer back.<span class="min">5 min</span></li>
     <li><b>Step 8</b> — read the draft critically: what you change, cut or add, and why. Declare the AI use. Download the PDF, then press <b>Check it in the question checker</b>.<span class="min">15 min</span></li>
@@ -165,7 +165,7 @@ input[type=range]{accent-color:var(--leaf);width:220px}
     <div><b>What you hand in</b><ul><li>The PDF: your brief, information needs + analysis, order and checks.</li><li>The AI draft.</li><li>Your changes with reasons, and the AI declaration.</li></ul></div>
     <div><b>How it is marked</b><ul><li>Every question maps to an information need and an analysis.</li><li>Order and length are defended.</li><li>The quality of your judgement on the AI draft — accepting it unchanged scores low.</li></ul></div>
   </div>
-  <p class="next"><b>Before →</b> <a href="https://cmoreno34.github.io/scale-studio/">scale studio</a> (how to measure each concept). <b>Next →</b> the <a href="https://cmoreno34.github.io/question-checker/">question checker</a> receives your questionnaire automatically.</p>
+  <p class="next"><b>Before →</b> the <a href="https://cmoreno34.github.io/scale-studio/">scale studio</a> sends your project and concepts here. <b>Next →</b> <b>Check it in the question checker</b> (step 7) sends the checker your questionnaire, your topic and your analysis plan — nothing to retype.</p>
 </section>
 
 <div class="who">
@@ -191,7 +191,7 @@ input[type=range]{accent-color:var(--leaf);width:220px}
     <textarea id="w_qual" class="capped" style="min-height:120px;max-height:320px" placeholder="Paste the themes, quotes and insights from your focus group / interviews / netnography (e.g. the AI analysis you checked in the focus group studio)."></textarea>
     <div class="count" id="qualcount"></div>
   </div>
-  <div class="row noprint"><button class="btn sm alt" id="example">fill an example</button></div>
+  <div class="row noprint"><button class="btn sm alt" id="example">fill an example</button><span class="hint" id="frommsg"></span></div>
 </div>
 
 <div class="step" style="--c:var(--c2)">
@@ -212,7 +212,7 @@ input[type=range]{accent-color:var(--leaf);width:220px}
 
 <div class="step" style="--c:var(--c3)">
   <h2><span class="n">3</span> What you need to learn — and the analysis for each line</h2>
-  <p class="lead">5.2 steps 2–3: one line per thing you must learn (information, not questions yet), and what you will do with it. <b>The analysis decides the scale</b> — see the <a href="https://cmoreno34.github.io/scale-studio/">scale studio</a>.</p>
+  <p class="lead">5.2 steps 2–3: one line per thing you must learn (information, not questions yet), and what you will do with it. <b>The analysis decides the scale</b>. Concepts sent from the <a href="https://cmoreno34.github.io/scale-studio/">scale studio</a> arrive here with the scale you chose — the AI must use it.</p>
   <div id="needs"></div>
   <div class="row noprint"><button class="btn sm alt" id="addneed">＋ add a line</button></div>
   <div class="checks"><label><input type="checkbox" id="w_aineeds"><span><b>Let the AI propose extra information needs</b><small>from the objectives or the qualitative themes — it must mark them as proposed, and you decide which stay.</small></span></label></div>
@@ -406,7 +406,7 @@ ${qual.length>40000?qual.slice(0,40000)+'\n[…truncated — the rest is attache
 Use these results as the basis of the body: turn each theme into something to QUANTIFY — how widespread it is, how strong, and in which segment. Do not re-explore the themes with open questions; measure them. Reuse the participants' own words in statements and response options. In Part A, name the theme each question measures.
 `:''}
 WHAT WE NEED TO LEARN (information needs → the analysis we will run)
-${needs.length?needs.map((x,i)=>`${i+1}. ${x.t.trim()} → ${x.a}`).join('\n'):'[none listed yet — derive them from the objectives]'}${val('w_aineeds')?'\nYou may propose additional information needs if the objectives'+(qual?' or the qualitative themes':'')+' clearly require them — mark each one PROPOSED in Part A.':'\nDo not add information needs beyond this list.'}
+${needs.length?needs.map((x,i)=>`${i+1}. ${x.t.trim()} → ${x.a}`).join('\n'):'[none listed yet — derive them from the objectives]'}${needs.some(x=>/planned scale:/.test(x.t))?'\nWhere a line says “planned scale”, use exactly that scale for it — the group chose it in advance to allow that analysis.':''}${val('w_aineeds')?'\nYou may propose additional information needs if the objectives'+(qual?' or the qualitative themes':'')+' clearly require them — mark each one PROPOSED in Part A.':'\nDo not add information needs beyond this list.'}
 
 ORDER — use these sections, in this order:
 ${on.map((s,i)=>`${i+1}. ${s.n} — ${s.d}`).join('\n')}
@@ -448,8 +448,9 @@ function extractPartB(t){t=t.replace(/\r/g,'');
 $('#tocheck').onclick=()=>{const t=val('w_ai');const msg=$('#tcmsg');
   if(!t){msg.textContent='Paste the AI answer first.';return;}
   const b=extractPartB(t);
-  try{localStorage.setItem(IMPORT_KEY,b);}catch(_){msg.textContent='Could not hand it over — copy Part B and paste it into the checker.';return;}
-  window.open(CHECKER,'_blank','noopener');msg.textContent='✓ Opened the checker with Part B loaded.';};
+  const plan=state.needs.filter(x=>x.t.trim()).map(x=>`${x.t.trim()} → ${x.a}`).join('\n');
+  try{localStorage.setItem(IMPORT_KEY,b);localStorage.setItem(IMPORT_KEY+'_meta',JSON.stringify({topic:val('w_topic'),client:val('w_client'),decision:val('w_decision'),plan}));}catch(_){msg.textContent='Could not hand it over — copy Part B and paste it into the checker.';return;}
+  window.open(CHECKER,'_blank','noopener');msg.textContent='✓ Opened the checker with your questionnaire, topic and analysis plan.';};
 
 /* example */
 $('#example').onclick=()=>{if((val('w_topic')||val('w_objectives'))&&!confirm('Replace what you wrote with the example?'))return;
@@ -474,6 +475,13 @@ function autogrow(t){if(t.classList.contains('capped'))return;t.style.height='au
     const ev=(e.type==='checkbox'||e.tagName==='SELECT')?'change':'input';
     e.addEventListener(ev,()=>{if(e.tagName==='TEXTAREA')autogrow(e);if(i==='w_qual')qualCount();refresh();});
     if(e.tagName==='TEXTAREA')autogrow(e);});
+  let imp=null;try{imp=JSON.parse(localStorage.getItem('em1_t5_from_scales')||'null');}catch(_){}
+  if(imp&&imp.topic){const has=val('w_topic')||state.needs.some(x=>x.t.trim());
+    if(!has||confirm('Load the project sent from the scale studio (“'+imp.topic+'”)? It replaces the topic, client, decision and the list in step 3.')){
+      $('#w_topic').value=imp.topic||'';$('#w_client').value=imp.client||'';$('#w_decision').value=imp.decision||'';
+      state.needs=(imp.needs||[]).map(x=>({t:x.t,a:ANAL.includes(x.a)?x.a:'let the AI choose'}));if(!state.needs.length)state.needs=[{t:'',a:'let the AI choose'}];
+      $('#frommsg').textContent=`✓ Received from the scale studio: your project and ${(imp.needs||[]).length} concept(s) — see step 3. Add the rest of what the survey must find out.`;}
+    try{localStorage.removeItem('em1_t5_from_scales');}catch(_){}}
   renderMode();renderNeeds();renderSecs();renderTypes();renderChecks();qualCount();refresh();})();
 $('#addneed').onclick=()=>{state.needs.push({t:'',a:'let the AI choose'});renderNeeds();refresh();const ins=document.querySelectorAll('#needs input');ins[ins.length-1].focus();};
 function copy(text,btn){const o=btn.textContent;const ok=()=>{btn.textContent='copied ✓';setTimeout(()=>btn.textContent=o,1200);};
